@@ -3,22 +3,27 @@ import { Book } from "../graphql/__generated__/resolvers-types";
 
 const db: Book[] = [
     {
+        id: "1",
         title: "To Kill a Mockingbird",
         author: "Harper Lee",
     },
     {
+        id: "2",
         title: "1984",
         author: "George Orwell",
     },
     {
+        id: "3",
         title: "The Great Gatsby",
         author: "F. Scott Fitzgerald",
     },
     {
+        id: "4",
         title: "Moby-dick",
         author: "Herman Melville",
     },
     {
+        id: "5",
         title: "Pride And Prejudice",
         author: "Jane Austen",
     },

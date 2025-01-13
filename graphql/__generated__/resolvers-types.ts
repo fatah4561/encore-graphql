@@ -25,6 +25,7 @@ export type AddBookMutationResponse = {
 export type Book = {
   __typename?: 'Book';
   author: Scalars['String'];
+  id: Scalars['ID'];
   title: Scalars['String'];
 };
 
@@ -41,7 +42,13 @@ export type MutationAddBookArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  book?: Maybe<Book>;
   books?: Maybe<Array<Maybe<Book>>>;
+};
+
+
+export type QueryBookArgs = {
+  id: Scalars['ID'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -117,6 +124,7 @@ export type ResolversTypes = ResolversObject<{
   AddBookMutationResponse: ResolverTypeWrapper<AddBookMutationResponse>;
   Book: ResolverTypeWrapper<Book>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -127,6 +135,7 @@ export type ResolversParentTypes = ResolversObject<{
   AddBookMutationResponse: AddBookMutationResponse;
   Book: Book;
   Boolean: Scalars['Boolean'];
+  ID: Scalars['ID'];
   Mutation: {};
   Query: {};
   String: Scalars['String'];
@@ -142,6 +151,7 @@ export type AddBookMutationResponseResolvers<ContextType = any, ParentType exten
 
 export type BookResolvers<ContextType = any, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = ResolversObject<{
   author?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -151,6 +161,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  book?: Resolver<Maybe<ResolversTypes['Book']>, ParentType, ContextType, RequireFields<QueryBookArgs, 'id'>>;
   books?: Resolver<Maybe<Array<Maybe<ResolversTypes['Book']>>>, ParentType, ContextType>;
 }>;
 
