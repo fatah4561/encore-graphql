@@ -5,7 +5,9 @@ import { APIError } from "encore.dev/api";
 const mutations: MutationResolvers = {
     addBook: async (__dirname, {title, author}) => {
         try {
-            const resp = await book.add({title, author});
+            const resp = await book.add({
+                title, author,
+            });
             return {
                 book: resp.book,
                 success: true,

@@ -1,53 +1,42 @@
-import { api, APIError} from "encore.dev/api";
+import { api, APIError } from "encore.dev/api";
 import { Book } from "../graphql/__generated__/resolvers-types";
+import { SQLDatabase } from "encore.dev/storage/sqldb";
+import knex from "knex";
 
-const db: Book[] = [
-    {
-        id: "1",
-        title: "To Kill a Mockingbird",
-        author: "Harper Lee",
-    },
-    {
-        id: "2",
-        title: "1984",
-        author: "George Orwell",
-    },
-    {
-        id: "3",
-        title: "The Great Gatsby",
-        author: "F. Scott Fitzgerald",
-    },
-    {
-        id: "4",
-        title: "Moby-dick",
-        author: "Herman Melville",
-    },
-    {
-        id: "5",
-        title: "Pride And Prejudice",
-        author: "Jane Austen",
-    },
-];
+const BookDB = new SQLDatabase("book", {
+  migrations: "./migrations",
+});
+
+const orm = knex({
+  client: "pg",
+  connection: BookDB.connectionString,
+});
+
+const Books = () => orm<Book>("books");
 
 export const list = api(
-    { expose: true, method: "GET", path: "/books"},
-    async (): Promise<{ books: Book[]}> => {
-        return { books: db };
-    }
-)
+  { method: "GET", path: "/books" },
+  async (): Promise<{ books: Book[] }> => {
+    const books = await Books().select();
+    return { books };
+  }
+);
 
-// omit the "__typename" field from the request
-type AddRequest = Omit<Required<Book>, "__typename">;
+// omit the "id", "__typename" field from the request
+type AddRequest = Omit<Required<Book>, "id" | "__typename">;
 
 export const add = api(
-    { expose: true, method: "POST", path: "/book"},
-    async (book: AddRequest): Promise<{book: Book}> => {
-        if (db.some((b)=> b.title === book.title)) {
-            throw APIError.alreadyExists(
-                `Book "${book.title}" is already in database`,
-            )
-        }
-        db.push(book);
-        return{ book };
+  { method: "POST", path: "/book" },
+  async (newBook: AddRequest): Promise<{ book: Book }> => {
+    const bookExists = await Books().where("title", newBook.title).first();
+
+    if (bookExists) {
+      throw APIError.alreadyExists(
+        `Book "${newBook.title}" is already in database`
+      );
     }
-)
+
+    const book = (await Books().insert(newBook, "*"))[0];
+    return { book };
+  }
+);
