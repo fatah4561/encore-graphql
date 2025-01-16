@@ -23,11 +23,11 @@ export const list = api(
 );
 
 // omit the "id", "__typename" field from the request
-type AddRequest = Omit<Required<Book>, "id" | "__typename" | "created_at" | "updated_at">;
+type BookRequest = Omit<Required<Book>, "id" | "__typename" | "created_at" | "updated_at">;
 
 export const add = api(
   { method: "POST", path: "/book" },
-  async (bookReq: AddRequest): Promise<{ book: Book }> => {
+  async (bookReq: BookRequest): Promise<{ book: Book }> => {
     const bookExists = await Books().where("title", bookReq.title).first();
 
     if (bookExists) {
@@ -42,6 +42,29 @@ export const add = api(
         ...bookReq
     }
     const book = (await Books().insert(newBook, "*"))[0];
+    return { book };
+  }
+);
+
+export const edit = api(
+  { method: "PUT", path: "/book/:id" },
+  async ({id, bookReq}: {id: string, bookReq: BookRequest}): Promise<{ book: Book }> => {
+    const bookExists = await Books().
+    where("title", bookReq.title).
+    whereNot("id", id).first();
+
+    if (bookExists) {
+      throw APIError.alreadyExists(
+        `Other book named "${bookReq.title}" is already in database`
+      );
+    }
+
+    const updateBook: Book = {
+        created_at: (new Date()).toISOString(),
+        updated_at: (new Date()).toISOString(),
+        ...bookReq
+    }
+    const book = (await Books().where({id: id}).update(updateBook, "*"))[0];
     return { book };
   }
 );
