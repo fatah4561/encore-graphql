@@ -50,6 +50,29 @@ const mutations: MutationResolvers = {
       };
     }
   },
+
+  deleteBook: async (__dirname: any, { id }: any) => {
+    try {
+      const resp = await book.destroy({
+        id,
+      });
+      return {
+        id: resp.id,
+        success: true,
+        code: "ok",
+        message: "Book deleted",
+      };
+    } catch (err) {
+      const apiError = err as APIError;
+
+      return {
+        book: null,
+        success: false,
+        code: apiError.code,
+        message: apiError.message,
+      };
+    }
+  },
 };
 
 export default mutations;

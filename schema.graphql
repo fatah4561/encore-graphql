@@ -18,7 +18,15 @@ type BookMutationResponse {
     book: Book
 }
 
+type DeleteBookMutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    id: ID
+}
+
 type Mutation {
     addBook(title: String!, author: String!): BookMutationResponse
     updateBook(id: ID!, title: String!, author: String!): BookMutationResponse
+    deleteBook(id: ID!): DeleteBookMutationResponse
 }

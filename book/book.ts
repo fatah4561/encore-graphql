@@ -23,7 +23,7 @@ export const list = api(
 );
 
 // omit the "id", "__typename" field from the request
-type BookRequest = Omit<Required<Book>, "id" | "__typename" | "created_at" | "updated_at">;
+type BookRequest = Omit<Required<Book>,  "__typename" | "id" | "created_at" | "updated_at">;
 
 export const add = api(
   { method: "POST", path: "/book" },
@@ -60,11 +60,18 @@ export const edit = api(
     }
 
     const updateBook: Book = {
-        created_at: (new Date()).toISOString(),
         updated_at: (new Date()).toISOString(),
         ...bookReq
     }
     const book = (await Books().where({id: id}).update(updateBook, "*"))[0];
     return { book };
+  }
+);
+
+export const destroy = api(
+  { method: "DELETE", path: "/book/:id" },
+  async ({id}: {id: string}): Promise<{ id: string }> => {
+    await Books().where({id: id}).delete("*")
+    return { id };
   }
 );
