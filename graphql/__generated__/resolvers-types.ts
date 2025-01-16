@@ -25,8 +25,10 @@ export type AddBookMutationResponse = {
 export type Book = {
   __typename?: 'Book';
   author: Scalars['String'];
+  created_at?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['ID']>;
   title: Scalars['String'];
+  updated_at?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -151,8 +153,10 @@ export type AddBookMutationResponseResolvers<ContextType = any, ParentType exten
 
 export type BookResolvers<ContextType = any, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = ResolversObject<{
   author?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  created_at?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updated_at?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

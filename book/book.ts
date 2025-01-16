@@ -23,19 +23,24 @@ export const list = api(
 );
 
 // omit the "id", "__typename" field from the request
-type AddRequest = Omit<Required<Book>, "id" | "__typename">;
+type AddRequest = Omit<Required<Book>, "id" | "__typename" | "created_at" | "updated_at">;
 
 export const add = api(
   { method: "POST", path: "/book" },
-  async (newBook: AddRequest): Promise<{ book: Book }> => {
-    const bookExists = await Books().where("title", newBook.title).first();
+  async (bookReq: AddRequest): Promise<{ book: Book }> => {
+    const bookExists = await Books().where("title", bookReq.title).first();
 
     if (bookExists) {
       throw APIError.alreadyExists(
-        `Book "${newBook.title}" is already in database`
+        `Book "${bookReq.title}" is already in database`
       );
     }
 
+    const newBook: Book = {
+        created_at: (new Date()).toISOString(),
+        updated_at: (new Date()).toISOString(),
+        ...bookReq
+    }
     const book = (await Books().insert(newBook, "*"))[0];
     return { book };
   }
