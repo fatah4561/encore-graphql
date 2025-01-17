@@ -6,7 +6,11 @@ import { json } from "node:stream/consumers";
 
 const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8"});
 
-const server = new ApolloServer({
+export interface Context {
+    token?: string;
+}
+
+const server = new ApolloServer<Context>({
     typeDefs,
     resolvers,
 })
@@ -33,7 +37,7 @@ export const graphqlAPI = api.raw(
                 search: new URLSearchParams(req.url ?? "").toString(),
             },
             context: async () => {
-                return {req, res};
+                return {req, res, token: req.headers.authorization};
             }
         })
 

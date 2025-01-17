@@ -1,12 +1,17 @@
 type Query {
-    books: [Book]
+    books: AllBookResponse
     book(id: ID!): Book
+}
+
+type AllBookResponse {
+    data: [Book]
+    error: String
 }
 
 type Book {
     id: ID
     title: String!
-    author: String!
+    author: String! # TODO? learn to use auth directives
     created_at: String
     updated_at: String
 }
